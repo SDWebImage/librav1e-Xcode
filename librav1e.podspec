@@ -26,7 +26,7 @@ rav1e is an AV1 video encoder. It is designed to eventually cover all use cases,
   s.author           = { 'Xiph.org' => 'mailman@xiph.org' }
   s.source           = { :git => 'https://github.com/SDWebImage/librav1e-Xcode.git', :tag => s.version.to_s }
 
-  s.osx.deployment_target = '10.10'
+  s.osx.deployment_target = '10.7'
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'rav1e/include/*.h'
