@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'librav1e'
-  s.version          = '0.1.0-beta'
+  s.version          = '0.1.0'
   s.summary          = 'librav1e - The fastest and safest AV1 encoder.'
 
 # This description is used to generate tags and improve search results.

@@ -27,6 +27,10 @@ librav1e is available through [CocoaPods](https://github.com/CocoaPods/CocoaPods
 pod 'librav1e'
 ```
 
+### Manual
+
+librav1e repo contains the pre-built binary (.a) and header. You can just drag to your Xcode project to link the binary and use.
+
 ## Usage
 
 You can use rav1e this Rust library by using the generated C API with [cargo-c](https://crates.io/crates/cargo-c).
