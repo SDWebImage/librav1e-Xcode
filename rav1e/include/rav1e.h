@@ -3,6 +3,12 @@
 #ifndef RAV1E_H
 #define RAV1E_H
 
+
+#define RAV1E_MAJOR 0
+#define RAV1E_MINOR 1
+#define RAV1E_PATCH 0
+
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -644,9 +650,10 @@ RaEncoderStatus rav1e_receive_packet(RaContext *ctx, RaPacket **pkt);
 RaEncoderStatus rav1e_send_frame(RaContext *ctx, const RaFrame *frame);
 
 /**
- * Return a string matching the EncoderStatus variant.
+ * Return a static string matching the EncoderStatus variant.
+ *
  */
-char *rav1e_status_to_str(RaEncoderStatus status);
+const char *rav1e_status_to_str(RaEncoderStatus status);
 
 /**
  * Ask how many bytes of the stats file are needed before the next frame
@@ -686,5 +693,27 @@ int rav1e_twopass_in(RaContext *ctx, uint8_t *buf, size_t buf_size);
  * Must be freed with rav1e_data_unref().
  */
 RaData *rav1e_twopass_out(RaContext *ctx);
+
+/**
+ * Version information with the information
+ * provided by `git describe --tags`.
+ *
+ * e.g. `0.1.0 (v0.1.0-1-g743d464)`
+ *
+ * This returns the version of the loaded library, regardless
+ * of which version the library user was built against.
+ */
+const char *rav1e_version_full(void);
+
+/**
+ * Version information as presented in `[package]` `version`.
+ *
+ * e.g. `0.1.0``
+ *
+ * Can be parsed by [semver](https://crates.io/crates/semver).
+ * This returns the version of the loaded library, regardless
+ * of which version the library user was built against.
+ */
+const char *rav1e_version_short(void);
 
 #endif /* RAV1E_H */
