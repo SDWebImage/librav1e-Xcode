@@ -29,8 +29,9 @@ rav1e is an AV1 video encoder. It is designed to eventually cover all use cases,
   s.osx.deployment_target = '10.7'
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'rav1e/include/*.h'
-  s.public_header_files = 'rav1e/include/*.h'
+  s.source_files = 'include/**/**.h'
+  s.public_header_files = 'include/**/*.h'
+  s.preserve_paths = 'include'
 
   s.ios.vendored_library = 'rav1e/iOS/librav1e.a'
   s.osx.vendored_library = 'rav1e/macOS/librav1e.a'
