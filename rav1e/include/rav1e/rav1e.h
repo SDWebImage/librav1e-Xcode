@@ -5,7 +5,7 @@
 
 
 #define RAV1E_MAJOR 0
-#define RAV1E_MINOR 1
+#define RAV1E_MINOR 2
 #define RAV1E_PATCH 0
 
 
@@ -130,7 +130,7 @@ typedef enum {
      * There are enough frames in the queue.
      *
      * May be emitted by `rav1e_send_frame` when trying to send a frame after
-     * the encoder has been flushed.
+     * the encoder has been flushed or the internal queue is full.
      */
     RA_ENCODER_STATUS_ENOUGH_DATA,
     /**
