@@ -4,6 +4,8 @@ osx_image: xcode11.3
 rust:
     - stable
 
+cache: cargo
+
 env:
   global:
     - LC_CTYPE=en_US.UTF-8
@@ -35,10 +37,10 @@ script:
     - cargo lipo --release --no-default-features --features "capi" --targets=aarch64-apple-ios,armv7-apple-ios,x86_64-apple-ios,i386-apple-ios
 
 before_deploy:
+    # iOS
     - cd $TRAVIS_BUILD_DIR
     - mkdir Build
     - cd Build
-    # iOS
     - mkdir iOS
     - cd iOS
     - mkdir librav1e.framework
@@ -51,6 +53,7 @@ before_deploy:
     # macOS
     - cd $TRAVIS_BUILD_DIR
     - cd Build
+    - mkdir Mac
     - cd Mac
     - mkdir librav1e.framework
     - cd librav1e.framework
@@ -69,13 +72,15 @@ before_deploy:
     - ln -s Versions/Current/Headers Headers
     - ln -s Versions/Current/Modules Modules
     # zip
+    - cd $TRAVIS_BUILD_DIR
+    - cd Build
     - zip -r librav1e.zip Mac/ iOS/
 
 deploy:
   provider: releases
   api_key:
     secure: jPRzCQzncgGtR318Yg0Uv3Q41H1bco2Tk92DhgV+OvYfQvv4cZTMzUmWzWKjp5axYzQo8GeZdlt/ZPk+A6qt8wudZivXCH0LPkjud22rnGYJ3+IElMwf32kCxDjTfnhKEvHBu8UY7HIELjE2Ac//y9eZh40dhVC27Q+j+DRmdbJ5wtzDkrgAyp83ptdHxFdwEJhC8wfVTKSQ/ODwo4WFuRAx15ZoZzgEnrnrYRqQpUOi9qyc+sFN7rtHOdFFIv/IXyQQLpw9GJaR0/KhZbv/u1b18EfCjFNVJSFjHuZvZ6NV4waBn6VpEPtcD7puFud0eLDiMg1zy9Iyfkl/eK1kiTLxZpgBT44ZJWUdyzYtWEZ+b/lw5H08NjSe88Sd08JWQf6YE0c114Wx4jB2Rh7UiLjrRmNg413sseCd/w9IcJJzympm45pcCvGh+PuFGxjjkM+H4H51IbxIKWe6RBma+wFCb5w17Oj9oQ22awBsvUrjFYay7j8N7dGq3TwVJ2w5MVq2969oklZTuJEb0Dya8up9iMLRKa2XSV3kUQD1yqWYPVoLxkiYpprI/ZrRtu2VwKSNGRCIcXQPXZowUrtVvsq2M/q1m34O2DKsLcC9JmoXKchxPwLdZVXK8AH3oces3u3/KEP53P8vgE6hrqXrfJCKGXudigEQyEhKhMuxvpI=
-  file: librav1e.zip
+  file: Build/librav1e.zip
   on:
     tags: true
     repo: SDWebImage/librav1e-Xcode
