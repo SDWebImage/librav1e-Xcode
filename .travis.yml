@@ -1,4 +1,4 @@
-
+os: osx
 language: rust
 osx_image: xcode11.3
 rust:
@@ -13,6 +13,7 @@ addons:
   homebrew:
     packages:
     - rustup
+    - nasm
 
 notifications:
   email: false
@@ -22,7 +23,8 @@ before_install:
     - locale
     - xcodebuild -version
     - xcodebuild -showsdks
-    - rustup target add aarch64-apple-ios armv7-apple-ios armv7s-apple-ios x86_64-apple-ios i386-apple-ios
+    - rustup target add aarch64-apple-ios armv7-apple-ios armv7s-apple-ios x86_64-apple-ios i386-apple-ios x86_64-apple-darwin
+    - rustup update
     - cargo install cargo-lipo
     - cargo install cbindgen
 
