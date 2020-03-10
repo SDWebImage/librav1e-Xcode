@@ -1,0 +1,6 @@
+framework module librav1e {
+  umbrella header "rav1e.h"
+
+  export *
+  module * { export * }
+}
