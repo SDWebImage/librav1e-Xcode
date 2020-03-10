@@ -24,12 +24,24 @@ tvOS and watchOS is not supported currently because of Rust language itself, see
 librav1e is available through [CocoaPods](https://github.com/CocoaPods/CocoaPods).
 
 ```
-pod 'librav1e'
+pod 'librav1e', '~> 0.3.0'
+```
+
+#### Carthage
+
+librav1e is available through [Carthage](https://github.com/Carthage/Carthage).
+
+Carthage dependency is Binary only frameworks, see: [Cartfile Syntax](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md).
+
+You should use the following Cartfile syntax to include the dependency:
+
+```
+binary "https://raw.githubusercontent.com/SDWebImage/librav1e-Xcode/master/librav1e.json" ~> 0.3.0
 ```
 
 ### Manual
 
-librav1e repo contains the pre-built binary (.a) and header. You can just drag to your Xcode project to link the binary and use.
+librav1e repo contains the pre-built framework in [Release Page](https://github.com/SDWebImage/librav1e-Xcode/releases). You can just download the zip and add framework to your Xcode project and use.
 
 ## Usage
 

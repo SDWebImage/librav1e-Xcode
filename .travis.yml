@@ -32,7 +32,7 @@ script:
   - set -o pipefail
   - mkdir include
   - rm -rf rav1e
-  - git clone -b v0.3.1 --depth 1 https://github.com/xiph/rav1e.git
+  - git clone -b v0.3.0 --depth 1 https://github.com/xiph/rav1e.git
   - cd rav1e
   - cbindgen -c cbindgen.toml -l C -o include/rav1e/rav1e.h --crate rav1e .
   # macOS
@@ -78,7 +78,7 @@ before_deploy:
   # zip
   - cd $TRAVIS_BUILD_DIR
   - cd Build
-  - zip -r librav1e.zip Mac/ iOS/
+  - zip -y -r librav1e.zip Mac/ iOS/
 
 deploy:
   provider: releases
