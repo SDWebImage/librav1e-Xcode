@@ -17,6 +17,9 @@ env:
 notifications:
   email: false
 
+# Only build tags
+if: tag IS present
+
 before_install:
   - env
   - locale
@@ -32,7 +35,7 @@ script:
   - set -o pipefail
   - mkdir include
   - rm -rf rav1e
-  - git clone -b v0.3.0 --depth 1 https://github.com/xiph/rav1e.git
+  - git clone -b "v$TRAVIS_TAG" --depth 1 https://github.com/xiph/rav1e.git
   - cd rav1e
   - cbindgen -c cbindgen.toml -l C -o include/rav1e/rav1e.h --crate rav1e .
   # macOS
