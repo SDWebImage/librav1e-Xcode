@@ -40,7 +40,7 @@ script:
   # macOS
   - cargo build --release --no-default-features --features "asm capi" --target x86_64-apple-darwin
   # iOS
-  - cargo lipo --release --no-default-features --features "capi" --targets=aarch64-apple-ios,armv7-apple-ios,x86_64-apple-ios,i386-apple-ios
+  - cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-ios,armv7-apple-ios,x86_64-apple-ios,i386-apple-ios
 
 before_deploy:
   # iOS
