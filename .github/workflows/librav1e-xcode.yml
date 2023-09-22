@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: macos-12
     env:
-      DEVELOPER_DIR: /Applications/Xcode_14.1.app
+      DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
     steps:
     - name: checkout
       uses: actions/checkout@v4.0.0
@@ -21,7 +21,7 @@ jobs:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
-          target
+          rav1e/target
         key: "${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}"
     - name: Set up cache
       uses: actions/cache@v3.3.2
@@ -30,7 +30,7 @@ jobs:
         key: "${{ runner.os }}-path"
     - uses: actions-rs/toolchain@v1.0.6
       with:
-        toolchain: 1.41.0
+        toolchain: 1.51.0
     - run: env
     - run: locale
     - run: xcodebuild -version
@@ -38,18 +38,21 @@ jobs:
     - run: rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-darwin x86_64-apple-darwin
     - run: cargo install cargo-lipo
     - run: cargo install cbindgen
+    - run: cargo install cargo-crate-type
     - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install nasm
-    - run: cargo build --verbose
     - run: set -o pipefail
     - run: mkdir include
     - run: rm -rf rav1e
-    - run: git clone -b "v${{ github.ref }}" --depth 1 https://github.com/xiph/rav1e.git
-    - run: cd rav1e
+    - run: git clone -b "v${{ github.ref_name }}" --depth 1 https://github.com/xiph/rav1e.git
+    # iOS
+    - run: rm -rf ${{ github.workspace }}/rav1e/target/
+    - run: cd ${{ github.workspace }}/rav1e
+    - run: ls -lash
     - run: cbindgen -c cbindgen.toml -l C -o include/rav1e/rav1e.h --crate rav1e .
-    - run: cargo build --release --no-default-features --features "asm capi" --targets=aarch64-apple-darwin,x86_64-apple-darwin
+    - run: cargo crate-type static
     - run: cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-ios,x86_64-apple-ios
     - run: cd ${{ github.workspace }}
-    - run: mkdir Build
+    - run: mkdir -p Build
     - run: cd Build
     - run: mkdir iOS
     - run: cd iOS
@@ -60,7 +63,13 @@ jobs:
     - run: cp ${{ github.workspace }}/rav1e/target/universal/release/librav1e.a librav1e
     - run: cp ${{ github.workspace }}/rav1e/include/rav1e/rav1e.h Headers/
     - run: cp ${{ github.workspace }}/module.modulemap Modules/
+    # MacOS
+    - run: rm -rf ${{ github.workspace }}/rav1e/target/
+    - run: cd ${{ github.workspace }}/rav1e
+    - run: ls -lash
+    - run: cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-darwin,x86_64-apple-darwin
     - run: cd ${{ github.workspace }}
+    - run: mkdir -p Build
     - run: cd Build
     - run: mkdir Mac
     - run: cd Mac
@@ -73,13 +82,14 @@ jobs:
     - run: cd A
     - run: mkdir Headers
     - run: mkdir Modules
-    - run: cp ${{ github.workspace }}/rav1e/target/x86_64-apple-darwin/release/librav1e.a librav1e
+    - run: cp ${{ github.workspace }}/rav1e/target/universal/release/librav1e.a librav1e
     - run: cp ${{ github.workspace }}/rav1e/include/rav1e/rav1e.h Headers/
     - run: cp ${{ github.workspace }}/module.modulemap Modules/
     - run: cd ../../
     - run: ln -s Versions/Current/librav1e librav1e
     - run: ln -s Versions/Current/Headers Headers
     - run: ln -s Versions/Current/Modules Modules
+    # Zip
     - run: cd ${{ github.workspace }}
     - run: cd Build
     - run: zip -y -r librav1e.zip Mac/ iOS/
