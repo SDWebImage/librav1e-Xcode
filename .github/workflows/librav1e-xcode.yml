@@ -1,27 +1,20 @@
 name: SDWebImage/librav1e-Xcode
 on:
   push:
-    branches:
-    - "**/*"
-  pull_request:
-concurrency:
-#   # This item has no matching transformer
-#   maximum_number_of_builds: 0
-  group: "${{ github.ref }}"
-  cancel-in-progress: true
+    # Pattern matched against refs/tags
+    tags:        
+      - '*'
 env:
   LC_CTYPE: en_US.UTF-8
   LANG: en_US.UTF-8
 jobs:
-  test:
-    runs-on: macos-latest
-    if: ${{ github.ref }}
+  build:
+    runs-on: macos-12
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_14.1.app
     steps:
     - name: checkout
       uses: actions/checkout@v4.0.0
-    - uses: maxim-lobanov/setup-xcode@v1.5.1
-      with:
-        xcode-version: '11.3'
     - name: Set up cargo cache
       uses: actions/cache@v3.3.2
       with:
@@ -96,6 +89,3 @@ jobs:
         GITHUB_REPOSITORY: "${{ github.repository }}"
       with:
         files: "${{ github.workspace }}/Build/librav1e.zip"
-      if: "${{ github.event_name == 'push' && ${{ github.ref }} }}"
-#     # This item has no matching transformer
-#     - email: false
