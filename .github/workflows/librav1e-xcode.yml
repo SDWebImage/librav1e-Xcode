@@ -1,0 +1,101 @@
+name: SDWebImage/librav1e-Xcode
+on:
+  push:
+    branches:
+    - "**/*"
+  pull_request:
+concurrency:
+#   # This item has no matching transformer
+#   maximum_number_of_builds: 0
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+env:
+  LC_CTYPE: en_US.UTF-8
+  LANG: en_US.UTF-8
+jobs:
+  test:
+    runs-on: macos-latest
+    if: ${{ github.ref }}
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4.0.0
+    - uses: maxim-lobanov/setup-xcode@v1.5.1
+      with:
+        xcode-version: '11.3'
+    - name: Set up cargo cache
+      uses: actions/cache@v3.3.2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: "${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}"
+    - name: Set up cache
+      uses: actions/cache@v3.3.2
+      with:
+        path: "${{ github.workspace }}/.cargo"
+        key: "${{ runner.os }}-path"
+    - uses: actions-rs/toolchain@v1.0.6
+      with:
+        toolchain: 1.41.0
+    - run: env
+    - run: locale
+    - run: xcodebuild -version
+    - run: xcodebuild -showsdks
+    - run: rustup target add aarch64-apple-ios armv7-apple-ios armv7s-apple-ios x86_64-apple-ios i386-apple-ios x86_64-apple-darwin
+    - run: cargo install cargo-lipo
+    - run: cargo install cbindgen
+    - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install nasm
+    - run: cargo build --verbose
+    - run: set -o pipefail
+    - run: mkdir include
+    - run: rm -rf rav1e
+    - run: git clone -b "v${{ github.ref }}" --depth 1 https://github.com/xiph/rav1e.git
+    - run: cd rav1e
+    - run: cbindgen -c cbindgen.toml -l C -o include/rav1e/rav1e.h --crate rav1e .
+    - run: cargo build --release --no-default-features --features "asm capi" --target x86_64-apple-darwin
+    - run: cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-ios,armv7-apple-ios,x86_64-apple-ios,i386-apple-ios
+    - run: cd ${{ github.workspace }}
+    - run: mkdir Build
+    - run: cd Build
+    - run: mkdir iOS
+    - run: cd iOS
+    - run: mkdir librav1e.framework
+    - run: cd librav1e.framework
+    - run: mkdir Headers
+    - run: mkdir Modules
+    - run: cp ${{ github.workspace }}/rav1e/target/universal/release/librav1e.a librav1e
+    - run: cp ${{ github.workspace }}/rav1e/include/rav1e/rav1e.h Headers/
+    - run: cp ${{ github.workspace }}/module.modulemap Modules/
+    - run: cd ${{ github.workspace }}
+    - run: cd Build
+    - run: mkdir Mac
+    - run: cd Mac
+    - run: mkdir librav1e.framework
+    - run: cd librav1e.framework
+    - run: mkdir Versions
+    - run: cd Versions
+    - run: mkdir A
+    - run: ln -s A Current
+    - run: cd A
+    - run: mkdir Headers
+    - run: mkdir Modules
+    - run: cp ${{ github.workspace }}/rav1e/target/x86_64-apple-darwin/release/librav1e.a librav1e
+    - run: cp ${{ github.workspace }}/rav1e/include/rav1e/rav1e.h Headers/
+    - run: cp ${{ github.workspace }}/module.modulemap Modules/
+    - run: cd ../../
+    - run: ln -s Versions/Current/librav1e librav1e
+    - run: ln -s Versions/Current/Headers Headers
+    - run: ln -s Versions/Current/Modules Modules
+    - run: cd ${{ github.workspace }}
+    - run: cd Build
+    - run: zip -y -r librav1e.zip Mac/ iOS/
+    - uses: softprops/action-gh-release@v0.1.15
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        GITHUB_REPOSITORY: "${{ github.repository }}"
+      with:
+        files: "${{ github.workspace }}/Build/librav1e.zip"
+      if: "${{ github.event_name == 'push' && ${{ github.ref }} }}"
+#     # This item has no matching transformer
+#     - email: false
