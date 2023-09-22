@@ -35,7 +35,7 @@ jobs:
     - run: locale
     - run: xcodebuild -version
     - run: xcodebuild -showsdks
-    - run: rustup target add aarch64-apple-ios armv7-apple-ios armv7s-apple-ios x86_64-apple-ios i386-apple-ios x86_64-apple-darwin
+    - run: rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-darwin x86_64-apple-darwin
     - run: cargo install cargo-lipo
     - run: cargo install cbindgen
     - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install nasm
@@ -46,8 +46,8 @@ jobs:
     - run: git clone -b "v${{ github.ref }}" --depth 1 https://github.com/xiph/rav1e.git
     - run: cd rav1e
     - run: cbindgen -c cbindgen.toml -l C -o include/rav1e/rav1e.h --crate rav1e .
-    - run: cargo build --release --no-default-features --features "asm capi" --target x86_64-apple-darwin
-    - run: cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-ios,armv7-apple-ios,x86_64-apple-ios,i386-apple-ios
+    - run: cargo build --release --no-default-features --features "asm capi" --targets=aarch64-apple-darwin,x86_64-apple-darwin
+    - run: cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-ios,x86_64-apple-ios
     - run: cd ${{ github.workspace }}
     - run: mkdir Build
     - run: cd Build
