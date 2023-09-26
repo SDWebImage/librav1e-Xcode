@@ -26,14 +26,11 @@ jobs:
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
-          toolchain: 1.51.0
-      - name: Set up cargo package
+          default: true
+          toolchain: 1.60.0
+      - name: Set up rust
         run: |
           rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-darwin x86_64-apple-darwin
-          cargo install cargo-lipo
-          cargo install cbindgen
-          cargo install cargo-crate-type
           HOMEBREW_NO_AUTO_UPDATE=1 brew install nasm
       - name: Clone rav1e
         run: |
@@ -41,6 +38,12 @@ jobs:
           mkdir include
           rm -rf rav1e
           git clone -b "v${{ github.ref_name }}" --depth 1 https://github.com/xiph/rav1e.git
+      - name: Install cargo package
+        run: |
+          cd "${{ github.workspace }}/rav1e"
+          cargo install cargo-lipo
+          cargo install cbindgen
+          cargo install cargo-crate-type
       - name: Configure rav1e
         run: |
           cd "${{ github.workspace }}/rav1e"
@@ -51,7 +54,7 @@ jobs:
         run: |
           cd "${{ github.workspace }}/rav1e"
           rm -rf "${{ github.workspace }}/rav1e/target"
-          cargo +1.51.0 lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-ios,x86_64-apple-ios
+          cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-ios,x86_64-apple-ios
           cd "${{ github.workspace }}"
           mkdir -p Build
           cd Build
@@ -69,7 +72,7 @@ jobs:
         run: |
           cd "${{ github.workspace }}/rav1e"
           rm -rf "${{ github.workspace }}/rav1e/target"
-          cargo +1.51.0 lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-darwin,x86_64-apple-darwin
+          cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-darwin,x86_64-apple-darwin
           cd "${{ github.workspace }}"
           mkdir -p Build
           cd Build
