@@ -24,10 +24,10 @@ jobs:
             rav1e/target
           key: "${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}"
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1.0.6
+        uses: actions-rs/toolchain@v1
         with:
+          profile: minimal
           toolchain: 1.51.0
-          override: true
       - name: Set up cargo package
         run: |
           rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-darwin x86_64-apple-darwin
@@ -51,7 +51,7 @@ jobs:
         run: |
           cd "${{ github.workspace }}/rav1e"
           rm -rf "${{ github.workspace }}/rav1e/target"
-          cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-ios,x86_64-apple-ios
+          cargo +1.51.0 lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-ios,x86_64-apple-ios
           cd "${{ github.workspace }}"
           mkdir -p Build
           cd Build
@@ -69,7 +69,7 @@ jobs:
         run: |
           cd "${{ github.workspace }}/rav1e"
           rm -rf "${{ github.workspace }}/rav1e/target"
-          cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-darwin,x86_64-apple-darwin
+          cargo +1.51.0 lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-darwin,x86_64-apple-darwin
           cd "${{ github.workspace }}"
           mkdir -p Build
           cd Build
