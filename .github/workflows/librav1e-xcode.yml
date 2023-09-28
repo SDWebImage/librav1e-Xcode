@@ -27,7 +27,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           default: true
-          toolchain: 1.65.0
+          toolchain: 1.70.0
       - name: Set up rust
         run: |
           rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-darwin x86_64-apple-darwin
@@ -54,7 +54,7 @@ jobs:
         run: |
           cd "${{ github.workspace }}/rav1e"
           rm -rf "${{ github.workspace }}/rav1e/target"
-          cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-ios,x86_64-apple-ios
+          cargo lipo --release --features "asm capi" --targets=aarch64-apple-ios,x86_64-apple-ios --locked --verbose
           cd "${{ github.workspace }}"
           mkdir -p Build
           cd Build
@@ -72,7 +72,7 @@ jobs:
         run: |
           cd "${{ github.workspace }}/rav1e"
           rm -rf "${{ github.workspace }}/rav1e/target"
-          cargo lipo --release --no-default-features --features "asm capi" --targets=aarch64-apple-darwin,x86_64-apple-darwin
+          cargo lipo --release --features "asm capi" --targets=aarch64-apple-darwin,x86_64-apple-darwin --locked --verbose
           cd "${{ github.workspace }}"
           mkdir -p Build
           cd Build
