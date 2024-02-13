@@ -12,8 +12,8 @@ Since Xcode does not support Rust, we provide a pre-built binary on target platf
 
 ## Requirements
 
-+ iOS 8
-+ macOS 10.7 (64-bit only)
++ iOS 9
++ macOS 10.11 (64-bit only)
 
 tvOS and watchOS is not supported currently because of Rust language itself, see: [rust-lang/rust#48862](https://github.com/rust-lang/rust/issues/48862)
 
